@@ -1,4 +1,5 @@
 package com.example.automation;
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
