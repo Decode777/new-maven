@@ -7,37 +7,54 @@ pipeline {
 
     environment {
         SONAR_TOKEN = credentials('sonar-token') // Replace with your Jenkins credential ID
+        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
+        PATH = "${JAVA_HOME}\\bin;${env.PATH}"
+
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                git 'https://github.com/Decode777/new-maven.git' // Replace with your repo link
+                checkout scm
             }
         }
-        stage('Build') {
+
+        stage('Build with Maven') {
             steps {
-                sh 'mvn clean install'
+                bat 'mvn clean package'
             }
         }
+
         stage('Test') {
             steps {
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
+
         stage('SonarQube Analysis') {
             steps {
-                sh '''
-                mvn sonar:sonar \
-                -Dsonar.projectKey=new-maven \
-                -Dsonar.host.url=http://localhost:9000 \
-                -Dsonar.login=${SONAR_TOKEN}
-                '''
+                bat """
+                mvn sonar:sonar ^
+                  -Dsonar.projectKey=new-maven ^
+                  -Dsonar.java.binaries=target/classes ^
+                  -Dsonar.java.test.binaries=target/test-classes ^
+                  -Dsonar.host.url=http://localhost:9000 ^
+                  -Dsonar.login=%SONAR_TOKEN%
+                """
             }
         }
+        
     }
 
     post {
+        success {
+        echo 'Pipeline completed successfully!'
+        }
+
+        failure {
+        echo 'Pipeline failed. Check logs for details.'
+        }
+
         always {
             junit '**/target/surefire-reports/*.xml'
             archiveArtifacts artifacts: '**/target/site/jacoco/*.html', fingerprint: true
