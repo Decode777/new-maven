@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3.8.5' // Adjust to match your Jenkins configuration
+        maven 'sonarmaven' // Adjust to match your Jenkins configuration
     }
 
     environment {
@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/your-repository-link.git' // Replace with your repo link
+                git 'https://github.com/Decode777/new-maven.git' // Replace with your repo link
             }
         }
         stage('Build') {
@@ -29,7 +29,7 @@ pipeline {
             steps {
                 sh '''
                 mvn sonar:sonar \
-                -Dsonar.projectKey=AutomationProject \
+                -Dsonar.projectKey=new-maven \
                 -Dsonar.host.url=http://localhost:9000 \
                 -Dsonar.login=${SONAR_TOKEN}
                 '''
