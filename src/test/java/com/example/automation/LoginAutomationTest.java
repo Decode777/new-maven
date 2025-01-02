@@ -8,6 +8,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class LoginAutomationTest {
@@ -18,9 +21,10 @@ public class LoginAutomationTest {
         WebDriver driver = new ChromeDriver();
         try {
             driver.get("https://example.com/login");
-            WebElement usernameField = driver.findElement(By.id("username"));
-            WebElement passwordField = driver.findElement(By.id("password"));
-            WebElement loginButton = driver.findElement(By.id("loginButton"));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
+            WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
+            WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("loginButton")));
 
             usernameField.sendKeys("testUser");
             passwordField.sendKeys("testPassword");
