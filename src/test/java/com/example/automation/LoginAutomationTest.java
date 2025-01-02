@@ -1,16 +1,20 @@
 package com.example.automation;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class LoginAutomationTest {
     @Test
     public void testLogin() {
-        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        WebDriverManager.chromedriver().setup();
+
         WebDriver driver = new ChromeDriver();
         try {
             driver.get("https://example.com/login");
