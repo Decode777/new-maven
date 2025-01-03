@@ -24,7 +24,7 @@ pipeline {
                 withSonarQubeEnv('sonarqube') { // Ensure the name matches your SonarQube configuration
                     bat """
                         mvn sonar:sonar \
-                        -Dsonar.projectKey=AutomationProject \
+                        -Dsonar.projectKey=sonarm \
                         -Dsonar.sources=src/test/java/com/example/automation/LoginAutomationTest.java \
                         -Dsonar.tests=src/test/java/com/example/automation/LoginAutomationTestRunner.java \
                         -Dsonar.junit.reportPaths=target/surefire-reports \
