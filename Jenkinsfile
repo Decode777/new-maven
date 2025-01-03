@@ -23,15 +23,17 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonarqube') { // Ensure the name matches your SonarQube configuration
                     bat """
-                        mvn sonar:sonar \
-                        -Dsonar.projectKey=sonarm \
-                        -Dsonar.sources=src/test/java/com/example/automation/LoginAutomationTest.java \
-                        -Dsonar.tests=src/test/java/com/example/automation/LoginAutomationTestRunner.java \
-                        -Dsonar.junit.reportPaths=target/surefire-reports \
-                        -Dsonar.jacoco.reportPaths=target/site/jacoco/jacoco.xml \
-                        -Dsonar.pmd.reportPaths=target/pmd-duplicates.xml \
-                        -Dsonar.host.url=http://localhost:9000 \
-                        -Dsonar.login=%SONAR_TOKEN%
+                        mvn sonar:sonar ^
+                        -Dsonar.projectKey=sonarm ^
+                        -Dsonar.java.binaries=target/classes ^
+                        -Dsonar.java.test.binaries=target/test-classes ^
+                        -Dsonar.host.url=http://localhost:9000 ^
+                        -Dsonar.login=%SONAR_TOKEN% ^
+                        -Dsonar.sources=src/main/java ^
+                        -Dsonar.tests=src/test/java ^
+                        -Dsonar.junit.reportPaths=target/surefire-reports ^
+                        -Dsonar.jacoco.reportPaths=target/site/jacoco/jacoco.xml ^
+                        -Dsonar.pmd.reportPaths=target/pmd-duplicates.xm
                     """
                 }
             }
