@@ -20,7 +20,7 @@ class LoginAutomationTest {
         options.addArguments("--ignore-certificate-errors");
         
         // Set up the WebDriver
-        System.setProperty("webdriver.chrome.driver", "C:\\chromedriver-win64\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\vaish\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe");
         WebDriver driver = new ChromeDriver(options);
         
         // Create a WebDriverWait instance

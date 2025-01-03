@@ -1,66 +1,46 @@
 pipeline {
- agent any
-
-tools {
-        maven 'sonarmaven' // Use the Maven configured in Jenkins
+    agent any
+    tools {
+        maven 'sonarmaven' // Ensure this matches the Maven configuration in Jenkins
     }
-
- environment {
- SONAR_TOKEN = credentials('sonar-token')
- JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
- PATH = "${JAVA_HOME}\\bin;${env.PATH}"
- }
-
- stages {
- stage('Checkout Code') {
- steps {
- checkout scm
- }
- }
-
- stage('Build with Maven') {
- steps {
- bat 'mvn clean package'
- }
- }
-
- stage('Run Automation Tests') {
- steps {
- bat 'mvn test'
- }
- }
-
-stage('Generate Coverage Report') {
+    environment {
+        SONAR_TOKEN = credentials('sonar-token') // Replace with your credentials ID for the SonarQube token
+    }
+    stages {
+        stage('Checkout') {
             steps {
-                // Use a tool like Jacoco to generate the coverage report
-                bat 'mvn jacoco:report'
+                checkout scm
             }
         }
-
- stage('SonarQube Analysis') {
- steps {
- withSonarQubeEnv('sonarqube') {
- bat """
- mvn sonar:sonar ^
--Dsonar.projectKey=new-maven ^
- -Dsonar.tests=src/test/java ^
--Dsonar.java.binaries=target/classes ^
--Dsonar.java.test.binaries=target/test-classes ^
- -Dsonar.host.url=http://localhost:9000 ^
--Dsonar.login=%SONAR_TOKEN% ^
--Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
- """
- }
- }
- }
- }
-
- post {
- success {
- echo 'Pipeline completed successfully!'
- }
- failure {
- echo 'Pipeline failed. Check logs for details.'
- }
- }
+        stage('Build and Test') {
+            steps {
+                bat 'mvn clean verify' // Run tests and generate JaCoCo reports
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube') { // Ensure the name matches your SonarQube configuration
+                    bat """
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=AutomationProject \
+                        -Dsonar.sources=src/test/java/com/example/automation/LoginAutomationTest.java \
+                        -Dsonar.tests=src/test/java/com/example/automation/LoginAutomationTestRunner.java \
+                        -Dsonar.junit.reportPaths=target/surefire-reports \
+                        -Dsonar.jacoco.reportPaths=target/site/jacoco/jacoco.xml \
+                        -Dsonar.pmd.reportPaths=target/pmd-duplicates.xml \
+                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.login=%SONAR_TOKEN%
+                    """
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
+    }
 }
