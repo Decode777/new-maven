@@ -11,7 +11,7 @@
    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
    <!-- SonarQube Properties -->
-   <sonar.projectKey>new-maven</sonar.projectKey>
+   <sonar.projectKey>AutomationProject</sonar.projectKey>
    <sonar.host.url>http://localhost:9000</sonar.host.url>
    <sonar.login>${SONAR_TOKEN}</sonar.login>
  </properties>
@@ -85,12 +85,15 @@
          </execution>
          <execution>
            <id>report</id>
-           <phase>test</phase>
+           <phase>verify</phase>
            <goals>
              <goal>report</goal>
            </goals>
          </execution>
        </executions>
+       <configuration>
+         <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
+       </configuration>
      </plugin>
 
      <!-- SonarQube Maven Plugin -->
@@ -99,6 +102,57 @@
        <artifactId>sonar-maven-plugin</artifactId>
        <version>3.9.1.2184</version>
      </plugin>
+
+     <!-- PMD Plugin for Code Duplication Detection -->
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-pmd-plugin</artifactId>
+       <version>3.14.0</version>
+       <executions>
+         <execution>
+           <goals>
+             <goal>pmd</goal>
+           </goals>
+           <configuration>
+             <!-- PMD Configuration for Duplication -->
+             <rulesets>
+               <ruleset>rulesets/java/duplicates.xml</ruleset>
+             </rulesets>
+             <outputFile>target/pmd-duplicates.xml</outputFile>
+             <generateHtmlReport>false</generateHtmlReport>
+           </configuration>
+         </execution>
+       </executions>
+     </plugin>
    </plugins>
  </build>
+
+ <profiles>
+   <!-- Profile to Run Sonar Analysis -->
+   <profile>
+     <id>sonar</id>
+     <activation>
+       <property>
+         <name>sonar</name>
+       </property>
+     </activation>
+     <build>
+       <plugins>
+         <plugin>
+           <groupId>org.sonarsource.scanner.maven</groupId>
+           <artifactId>sonar-maven-plugin</artifactId>
+           <version>3.9.1.2184</version>
+           <executions>
+             <execution>
+               <phase>verify</phase>
+               <goals>
+                 <goal>sonar</goal>
+               </goals>
+             </execution>
+           </executions>
+         </plugin>
+       </plugins>
+     </build>
+   </profile>
+ </profiles>
 </project>
