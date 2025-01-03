@@ -30,6 +30,13 @@ tools {
  }
  }
 
+stage('Generate Coverage Report') {
+            steps {
+                // Use a tool like Jacoco to generate the coverage report
+                bat 'mvn jacoco:report'
+            }
+        }
+
  stage('SonarQube Analysis') {
  steps {
  withSonarQubeEnv('sonarqube') {
@@ -40,7 +47,8 @@ tools {
 -Dsonar.java.binaries=target/classes ^
 -Dsonar.java.test.binaries=target/test-classes ^
  -Dsonar.host.url=http://localhost:9000 ^
--Dsonar.login=%SONAR_TOKEN%
+-Dsonar.login=%SONAR_TOKEN% ^
+-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
  """
  }
  }
