@@ -1,6 +1,10 @@
 pipeline {
  agent any
 
+tools {
+        maven 'sonarmaven' // Use the Maven configured in Jenkins
+    }
+
  environment {
  SONAR_TOKEN = credentials('sonar-token')
  JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
